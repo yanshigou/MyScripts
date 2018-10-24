@@ -61,23 +61,62 @@ def GetAccessIp(input_file_name,output_file_name):
     print "ip提取完毕"
 
 
-def GetErrorIP(input_file_name,output_file_name):
+def GetErrorIP(input_file_name2,output_file_name2):
     sep = '\n'
     sep1 = '*'*30 + '\n'
     sep2 = '\n' + '*'*30 + '\n\n'
-    ip_list=[]
-    pass
+    ip_list = []
+    err_list = []
+    timelist = []
+
+    fLog = open(input_file_name2)
+    for each in fLog:
+        ip = re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
+        ip_list.append(ip[0])
+
+        err = re.findall(r'(?<=\d{6} ).*(?= client)', str(each), re.S)
+        err_list.append(err[0])
+
+        errtime = each.split()[1]
+        timelist.append(errtime)
+
+    ips = list(set(ip_list))
+    errs = list(set(err_list))
+    print("error中不同ip个数:%s " % len(ips))
+    print("error不同个数:%s " % len(errs))
 
 
+
+    #写
+    fout = open(output_file_name2, "a")
+    for each in ips:
+      # print(each)
+      fout.write(each + sep)
+
+    for each in errs:
+        fout.write(each + sep)
+
+    fout.write(sep1 + timelist[0] + ' 至 ' + timelist[-1] + sep)
+    fout.write("nginx error出现ip个数:%s "% len(ips) + sep)
+    fout.write("nginx error类型个数:%s "% len(errs) + sep)
+    fout.write("nginx error次数:%s"% len(ip_list) + sep)
+    fout.write('统计时间: ' + str(datetime.now()) + sep2)
+    # print(ips)
+
+    fout.close()
+    fLog.close()
+    print "error提取完毕"
 
 
 
 if __name__ == '__main__':
-    input_file_name = "D:\\dzt\\access.log"
-    output_file_name = "D:\\dzt\\output_access.txt"
-    GetAccessIp(input_file_name, output_file_name)
+    # input_file_name = "D:\\dzt\\access.log"
+    # output_file_name = "D:\\dzt\\output_access.txt"
+    # GetAccessIp(input_file_name, output_file_name)
     input_file_name2 = "D:\\dzt\\error.log"
     output_file_name2 = "D:\\dzt\\output_error.txt"
     GetErrorIP(input_file_name2, output_file_name2)
     time2 = datetime.now()
     print ('总共耗时：' + str(time2 - time1) + 's')
+
+## (?<=\d{6} )(.*)(?=client) 尝试了许久获取的截取error.log中报错信息
