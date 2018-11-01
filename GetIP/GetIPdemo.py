@@ -19,6 +19,7 @@ def GetAccessIp(input_file_name,output_file_name):
     timelist = []
     alltimelist = []
     requestlist = []
+    requestlist2 = []
 
     fLog = open(input_file_name)
     for each in fLog:
@@ -43,9 +44,25 @@ def GetAccessIp(input_file_name,output_file_name):
         requestlist.append(request[0])
     # print(requestlist)
 
+    # 再在requestlist中匹配地址
+    for ea in requestlist:
+        request2 = re.findall(r'.*(?=\?)', str(ea), re.S)
+        if request2 == []:
+            request2 = re.findall(r'.*(?= HTTP)', str(ea), re.S)
+            if request2 == []:
+                request2 = re.findall(r'.*', str(ea), re.S)
+
+        # print(request2)
+        requestlist2.append(request2[0])
+    # print(requestlist2)
+
+
     # 计算每个小时访问次数
     count1 = 1
     countlist1 = []
+    alltimelist.sort()
+    all = list(set(alltimelist))
+    all.sort()
 
     for x in range(len(alltimelist)-1):
         if alltimelist[x+1] == alltimelist[x]:
@@ -53,17 +70,28 @@ def GetAccessIp(input_file_name,output_file_name):
         else:
             countlist1.append(count1)
             count1 = 1
-    # print(list(set(alltimelist)))
+    # print(all)
     # print(countlist1)
 
 
     #计算每种请求地址访问次数
     count2 = 1
     countlist2 = []
-    r = list(set(requestlist))
+    requestlist2.sort()
+    r = list(set(requestlist2))
+    r.sort()
+    # print(requestlist2)
 
-    # for i in r:
-    #     print(i)
+    for x in range(len(requestlist2)-1):
+        if requestlist2[x+1] == requestlist2[x]:
+            count2 += 1
+        else:
+            countlist2.append(count2)
+            count2 = 1
+    # print(r)
+    # print(countlist2)
+
+
 
 
     #计算每秒最大访问量
@@ -87,9 +115,11 @@ def GetAccessIp(input_file_name,output_file_name):
     print("access不同ip个数:%s "% len(ips))
 
     #写
-    fout = open(output_file_name, "a")
-    a = list(set(alltimelist))
+    fout = open(output_file_name, 'a+')
+    a = all
     b = countlist1
+    c = r
+    d = countlist2
 
 
 
@@ -107,13 +137,15 @@ def GetAccessIp(input_file_name,output_file_name):
     fout.write("单秒最大访问量:%s"% max(countlist) + sep)
     for h in range(len(a)-1):
         fout.write("%s点至%s点，访问量：%s次"%(a[h],a[h]+1,b[h])+sep)
+    for q in range(len(c)-1):
+        fout.write("%s，%s次"%(c[q],d[q]) + sep)
+
     # fout.write('最大5个访问ip:' + sep)
     # temp = sorted(ip_count.items(), key=lambda x: x[1], reverse=True)[:5]
     # for i in temp:
     #     fout.write(str(i) + sep)
 
     fout.write('统计时间: ' + str(datetime.now()) + sep2)
-    # print(ips)
 
     fout.close()
     fLog.close()
@@ -176,8 +208,8 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
     fout.write(sep1 + timelist[0] + ' 至 ' + timelist[-1] + sep)
     # fout.write("nginx error出现ip个数:%s "% len(ips) + sep)
-    fout.write("nginx error类型个数:%s "% len(errs) + sep)
-    fout.write("nginx 报错总数:%s "% len(err_list) + sep)
+    fout.write("error类型个数:%s "% len(errs) + sep)
+    fout.write("报错总数:%s "% len(err_list) + sep)
 
     # fout.write("nginx error总数:%s "% len(errorL) + sep)
     # x = len(err_list)-len(ip_list)
@@ -193,14 +225,14 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
 
 if __name__ == '__main__':
-    input_file_name = "C:\\Users\\Administrator\\Desktop\\log\\access2018-10-31.log"
-    output_file_name = "C:\\Users\\Administrator\\Desktop\\log\\output_access2018-10-31.txt"
+    input_file_name = "D:\dzt\log\\access2018-10-31.log"
+    output_file_name = "D:\dzt\log\\output_access2018-10-31.txt"
     GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "C:\\Users\\Administrator\\Desktop\\log\\error2018-10-31.log"
-    output_file_name2 = "C:\\Users\\Administrator\\Desktop\\log\\output_error2018-10-31.txt"
+    input_file_name2 = "D:\dzt\log\\error2018-10-31.log"
+    output_file_name2 = "D:\dzt\log\\output_error2018-10-31.txt"
     GetErrorIP(input_file_name2, output_file_name2)
     time2 = datetime.now()
-    print ('总共耗时：' + str(time2 - time1) + 's')
+    print('总共耗时：' + str(time2 - time1) + 's')
 
 ## (?<=\d{6} ).*(?=, client) 尝试了许久获取的截取error.log中报错信息\
 ## (20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d 匹配时间
