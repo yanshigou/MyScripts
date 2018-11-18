@@ -29,6 +29,7 @@ def GetAccessIp(input_file_name,output_file_name):
 
         # 分割log中每行空格
         iptime = each.split()[3]
+        # print(iptime[-8:])  #为00:00:00格式时间
         timelist.append(iptime)
         #匹配每个小时
         alltime = re.findall(r'\:(20|21|22|23|[0-1]\d)', str(iptime), re.S)
@@ -62,7 +63,7 @@ def GetAccessIp(input_file_name,output_file_name):
     countlist1 = []
     alltimelist.sort()
     all = list(set(alltimelist))
-    all.sort()
+    all.sort(key=alltimelist.index)
 
     for x in range(len(alltimelist)-1):
         if alltimelist[x+1] == alltimelist[x]:
@@ -80,6 +81,7 @@ def GetAccessIp(input_file_name,output_file_name):
     requestlist2.sort()
     r = list(set(requestlist2))
     r.sort()
+    # list2.sort(key=list1.index)
     # print(requestlist2)
 
     for x in range(len(requestlist2)-1):
@@ -97,17 +99,28 @@ def GetAccessIp(input_file_name,output_file_name):
     #计算每秒最大访问量
     count = 1
     countlist = []
+    tlists = []
+    timelist.sort()
+
 
     for x in range(len(timelist)-1):
-        if timelist[x+1] == timelist[x]:
+        if timelist[x] == timelist[x+1]:
             count += 1
         else:
+            tlists.append(timelist[x])
             countlist.append(count)
             count = 1
-
-
-
+    # print(countlist)
     # print(max(countlist))
+    # countlist.sort(key=countlist.index)
+
+    #取出最大访问量的时间
+    # print(tlist)
+    # print(len(tlists))
+    for x in range(len(countlist)-1):
+        if countlist[x] == max(countlist):
+            maxtime = tlists[x]
+            break
 
 
     ips = list(set(ip_list))
@@ -135,6 +148,7 @@ def GetAccessIp(input_file_name,output_file_name):
     fout.write("访问量:%s"% len(ip_list) + sep)
     fout.write("IP个数:%s "% len(ips) + sep)
     fout.write("单秒最大访问量:%s"% max(countlist) + sep)
+    fout.write("单秒最大访问量时间:%s"% maxtime + sep)
     for h in range(len(a)-1):
         fout.write("%s点至%s点，访问量：%s次"%(a[h],a[h]+1,b[h])+sep)
     for q in range(len(c)-1):
@@ -225,11 +239,11 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
 
 if __name__ == '__main__':
-    input_file_name = "D:\dzt\log\\access2018-10-31.log"
-    output_file_name = "D:\dzt\log\\output_access2018-10-31.txt"
+    input_file_name = "C:\Users\Administrator\Desktop\log\\access2018-11-18.log"
+    output_file_name = "C:\Users\Administrator\Desktop\log\\output_access2018-11-18.txt"
     GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "D:\dzt\log\\error2018-10-31.log"
-    output_file_name2 = "D:\dzt\log\\output_error2018-10-31.txt"
+    input_file_name2 = "C:\Users\Administrator\Desktop\log\\error2018-11-18.log"
+    output_file_name2 = "C:\Users\Administrator\Desktop\log\\output_error2018-11-18.txt"
     GetErrorIP(input_file_name2, output_file_name2)
     time2 = datetime.now()
     print('总共耗时：' + str(time2 - time1) + 's')
