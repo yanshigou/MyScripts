@@ -1,12 +1,6 @@
-# encoding: utf-8
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
-# import pandas as pd
-import linecache
 import re
+import numpy as np
 from datetime import datetime
-import requests
 time1 = datetime.now()
 
 
@@ -24,7 +18,7 @@ def GetAccessIp(input_file_name,output_file_name):
     fLog = open(input_file_name)
     for each in fLog:
         #匹配ip
-        ip=re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])',str(each),re.S)
+        ip=re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
         ip_list.append(ip[0])
 
         # 分割log中每行空格
@@ -71,37 +65,31 @@ def GetAccessIp(input_file_name,output_file_name):
         else:
             countlist1.append(count1)
             count1 = 1
-    # print(all)
-    # print(countlist1)
 
 
-    #计算每种请求地址访问次数
-    count2 = 1
-    countlist2 = []
-    requestlist2.sort()
-    r = list(set(requestlist2))
-    r.sort()
-    # list2.sort(key=list1.index)
-    # print(requestlist2)
-
-    for x in range(len(requestlist2)-1):
-        if requestlist2[x+1] == requestlist2[x]:
-            count2 += 1
-        else:
-            countlist2.append(count2)
-            count2 = 1
-    # print(r)
-    # print(countlist2)
-
-
-
+    # #计算每种请求地址访问次数
+    # count2 = 1
+    # countlist2 = []
+    # requestlist2.sort()
+    # r = list(set(requestlist2))
+    # r.sort()
+    # # list2.sort(key=list1.index)
+    # # print(requestlist2)
+    #
+    # for x in range(len(requestlist2)-1):
+    #     if requestlist2[x+1] == requestlist2[x]:
+    #         count2 += 1
+    #     else:
+    #         countlist2.append(count2)
+    #         count2 = 1
+    # # print(r)
+    # # print(countlist2)
 
     #计算每秒最大访问量
     count = 1
     countlist = []
     tlists = []
     timelist.sort()
-
 
     for x in range(len(timelist)-1):
         if timelist[x] == timelist[x+1]:
@@ -111,28 +99,44 @@ def GetAccessIp(input_file_name,output_file_name):
             countlist.append(count)
             count = 1
     # print(countlist)
-    # print(max(countlist))
+    print(max(countlist))
+    aa = np.array(countlist)
+    # print(a)
+    # b为索引的排序的列表 从小到大排列  b[-1]为最大
+    ba = np.argsort(aa)
+    # print(b)
     # countlist.sort(key=countlist.index)
 
     #取出最大访问量的时间
+    bb = list(ba[-20:])
+    print(bb)
+    maxtime = []
+    maxcountlist = []
+    for i in bb:
+        maxtime.append(tlists[i])
+        maxcountlist.append(countlist[i])
+    print(maxtime)
+    print(maxcountlist)
+
     # print(tlist)
     # print(len(tlists))
-    for x in range(len(countlist)-1):
-        if countlist[x] == max(countlist):
-            maxtime = tlists[x]
-            break
-
+    # for x in range(len(countlist)-1):
+    #     if countlist[x] == max(countlist):
+    #         maxtime = tlists[x]
+    #         break
 
     ips = list(set(ip_list))
 
-    print("access不同ip个数:%s "% len(ips))
+    print("access不同ip个数:%s " % len(ips))
 
     #写
     fout = open(output_file_name, 'a+')
     a = all
     b = countlist1
-    c = r
-    d = countlist2
+
+    # API次数
+    # c = r
+    # d = countlist2
 
 
 
@@ -145,14 +149,18 @@ def GetAccessIp(input_file_name,output_file_name):
     # print()
 
     fout.write(sep1 + timelist[0] + '] 至 ' + timelist[-1] + ']' + sep)
-    fout.write("访问量:%s"% len(ip_list) + sep)
-    fout.write("IP个数:%s "% len(ips) + sep)
-    fout.write("单秒最大访问量:%s"% max(countlist) + sep)
-    fout.write("单秒最大访问量时间:%s"% maxtime + sep)
+    fout.write("访问量:%s" % len(ip_list) + sep)
+    fout.write("IP个数:%s " % len(ips) + sep)
+    fout.write("单秒最大访问量:%s" % max(countlist) + sep)
+    fout.write("单秒最大访问量时间:%s" % maxtime[-1] + sep)
     for h in range(len(a)-1):
-        fout.write("%s点至%s点，访问量：%s次"%(a[h],a[h]+1,b[h])+sep)
-    for q in range(len(c)-1):
-        fout.write("%s，%s次"%(c[q],d[q]) + sep)
+        fout.write("%s点至%s点，访问量：%s次" % (a[h], a[h]+1, b[h])+sep)
+    # API次数
+    # for q in range(len(c)-1):
+    #     fout.write("%s，%s次"%(c[q],d[q]) + sep)
+
+    for i in range(1, len(maxtime)+1):
+        fout.write("%s，%s次" % (maxtime[-i], maxcountlist[-i]) + sep)
 
     # fout.write('最大5个访问ip:' + sep)
     # temp = sorted(ip_count.items(), key=lambda x: x[1], reverse=True)[:5]
@@ -163,7 +171,7 @@ def GetAccessIp(input_file_name,output_file_name):
 
     fout.close()
     fLog.close()
-    print "ip提取完毕"
+    print("ip提取完毕")
 
 
 def GetErrorIP(input_file_name2,output_file_name2):
@@ -222,8 +230,8 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
     fout.write(sep1 + timelist[0] + ' 至 ' + timelist[-1] + sep)
     # fout.write("nginx error出现ip个数:%s "% len(ips) + sep)
-    fout.write("error类型个数:%s "% len(errs) + sep)
-    fout.write("报错总数:%s "% len(err_list) + sep)
+    fout.write("error类型个数:%s " % len(errs) + sep)
+    fout.write("报错总数:%s " % len(err_list) + sep)
 
     # fout.write("nginx error总数:%s "% len(errorL) + sep)
     # x = len(err_list)-len(ip_list)
@@ -234,17 +242,17 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
     fout.close()
     fLog.close()
-    print "error提取完毕"
+    print("error提取完毕")
 
 
 
 if __name__ == '__main__':
-    input_file_name = "C:\Users\Administrator\Desktop\log\\access2018-11-18.log"
-    output_file_name = "C:\Users\Administrator\Desktop\log\\output_access2018-11-18.txt"
+    input_file_name = "C:\\Users\\Administrator\\Desktop\\log\\access2018-11-30.log"
+    output_file_name = "C:\\Users\\Administrator\\Desktop\\log\\output2018-11-30.txt"
     GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "C:\Users\Administrator\Desktop\log\\error2018-11-18.log"
-    output_file_name2 = "C:\Users\Administrator\Desktop\log\\output_error2018-11-18.txt"
-    GetErrorIP(input_file_name2, output_file_name2)
+    input_file_name2 = "C:\\Users\\Administrator\\Desktop\\log\\error2018-11-30.log"
+    # output_file_name2 = "C:\\Users\\Administrator\\Desktop\\log\\output_error2018-11-18.txt"
+    GetErrorIP(input_file_name2, output_file_name)
     time2 = datetime.now()
     print('总共耗时：' + str(time2 - time1) + 's')
 
