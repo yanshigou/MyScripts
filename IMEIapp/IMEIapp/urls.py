@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.views.generic import TemplateView   #template_name='html'  可用作首页
-from writedb.views import WriteView
+from writedb.views import UploadView, Paoliuliang, read_and_pao
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^write$', WriteView.as_view())
+    url(r'^upload/$', UploadView.as_view()),
+    url(r'^run/(?P<file_name>.*)/$', Paoliuliang.as_view()),
+    url(r'^paopao/$', read_and_pao.as_view()),
+
 ]
