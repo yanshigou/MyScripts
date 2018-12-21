@@ -9,6 +9,10 @@ class ImeiInfo(models.Model):
     state = models.CharField(max_length=20, default='unfinished')
     starttime = models.DateTimeField(default=datetime.now)
     oktime = models.DateTimeField(null=True)
+    filename = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ("imei", "state")  # 联合唯一
 
     def __unicode__(self):
         return self.imei
@@ -20,3 +24,10 @@ class FileInfo(models.Model):
 
     def __unicode__(self):
         return self.username
+
+
+class PLL(models.Model):
+    imei = models.CharField(max_length=50)
+    state = models.CharField(max_length=20, default='unfinished')
+    oktime = models.DateTimeField(null=True)
+    filename = models.CharField(max_length=100)
