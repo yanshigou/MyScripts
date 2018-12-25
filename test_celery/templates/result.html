@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+}
+</style>
+<body>
+<div>
+    <h2>任务执行结果：</h2>
+    <table border="1" class="gridtable">
+        <tr>
+            <td>Task_id</td>
+            <td>备注</td>
+            <td>文件名</td>
+            <td>数据量</td>
+            <td>任务状态</td>
+            <td>开始时间</td>
+            <td>完成时间</td>
+            <td>文件下载</td>
+
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row.task_id }}</td>
+            <td>{{ row.info }}</td>
+            <td>{{ row.filename }}</td>
+            <td>{{ row.count }}</td>
+            {% if row.status == 'SUCCESS' %}
+                <td style="color:#00BB00">{{ row.status }}</td>
+            {% elif row.status == 'STARTED' %}
+                <td style="color:#FFCC00">{{ row.status }}</td>
+            {% else %}
+                <td style="color:red">{{ row.status }}</td>
+            {% endif %}
+            <td>{{ row.starttime|date:"Y-m-d H:i:s" }}</td>
+            {% if row.oktime %}
+                <td>{{ row.oktime|date:"Y-m-d H:i:s" }}</td>
+                <td><a href="{{ row.download }}" class="downcode" target="_blank" download="" data-id="274" title="">点击下载文件</a></td>
+            {% elif row.status == 'STARTED' %}
+                <td style="color:#FFCC00">未完成，请耐心等待</td>
+                <td style="color:red">未完成，请耐心等待</td>
+            {% elif row.status == 'FAILURE' %}
+                <td style="color:red">任务失败，请检查后重试</td>
+                <td style="color:red">任务失败，请检查后重试</td>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+    </table>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>跑流量文件上传</h1>
+    <form method="post" enctype="multipart/form-data" >
+{#        以未编码的情况下发送#}
+
+        {{ form.as_p }}
+        <input type="submit" value="提交" />
+        {% csrf_token %}
+    </form>
+</body>
+</html>
