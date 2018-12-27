@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    #divcss5{
+        margin: 15% auto;
+        border:1px solid #000;
+        width:400px;
+        height:200px;
+    }
+    p{
+        margin-top: 20px;
+        margin-left: 70px;
+    }
+    #sub{
+        margin-top: 10px;
+        margin-left: 150px;
+    }
+
+</style>
+<body>
+<div id="divcss5">
+    <h2 style="margin: 15px 115px">跑流量情况查询</h2>
+    <form method="post" enctype="multipart/form-data" >
+
+        {{ form.as_p }}
+        <input id="sub" type="submit" value="提交" />
+        {% csrf_token %}
+    </form>
+    <div>
+    <h2><a href="/">返回主页</a></h2>
+    </div>
+</div>
+
+</body>
+</html>
