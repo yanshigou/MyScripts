@@ -15,11 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from paopao.views import UploadView, Results, Download
+from paopao.views import UploadView, Results, Download, LoginView, GetView, Index, Uploaded
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', Index.as_view()),
     url(r'^results/$', Results.as_view()),
-    url(r'^upload/$', UploadView.as_view()),
-    url(r'^results/(?P<file_name>.*)/$', Download.as_view())
+    url(r'^pao/$', UploadView.as_view(), name='upload'),
+    url(r'^results/(?P<file_name>.*)/$', Download.as_view(), name='results'),
+    url(r'^login/$', LoginView.as_view()),
+    url(r'^get/$', GetView.as_view()),
+    url(r'^uploaded/$', Uploaded.as_view()),
 ]
