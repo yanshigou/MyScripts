@@ -4,14 +4,35 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+    #divcss5{
+        margin: 15% auto;
+        border:1px solid #000;
+        width:400px;
+        height:200px;
+    }
+    p{
+        margin-top: 20px;
+        margin-left: 70px;
+    }
+    #sub{
+        margin-top: 10px;
+        margin-left: 150px;
+    }
+
+</style>
 <body>
-    <h1>跑流量文件上传</h1>
+<div id="divcss5">
+    <h2 style="margin: 15px 115px">跑流量文件上传</h2>
     <form method="post" enctype="multipart/form-data" >
-{#        以未编码的情况下发送#}
 
         {{ form.as_p }}
-        <input type="submit" value="提交" />
+        <input id="sub" type="submit" value="提交" />
         {% csrf_token %}
     </form>
+    <div>
+    <h2><a href="/">返回主页</a></h2>
+    </div>
+</div>
 </body>
 </html>
