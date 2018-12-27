@@ -44,5 +44,7 @@
 ##### 三、test_celery
 
 * 是一个django项目，利用celery异步任务处理，上传文件后，不用等待逻辑执行完再return，逻辑在后台执行，不影响用户体验
+* 挂在ubuntu服务器上 使用nginx uwsgi  supervisor 实现用户上传文件异步执行任务
+* [我的博客](https://www.dogebug.cn)上有针对这个项目的详细文章
 
-2018-12-25
+2018-12-27
