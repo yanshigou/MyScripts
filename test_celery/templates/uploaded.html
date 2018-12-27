@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>已上传任务</title>
+</head>
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+}
+</style>
+<body>
+<div>
+    <h2>已上传任务：</h2>
+    <p style="color:red">请勿重复上传</p>
+    <table border="1" class="gridtable">
+        <tr>
+            <td>文件名</td>
+            <td>备注</td>
+            <td>开始时间</td>
+        </tr>
+        {% for row in all %}
+        <tr>
+            <td>{{ row.filename }}</td>
+            <td>{{ row.info }}</td>
+            <td>{{ row.starttime|date:"Y-m-d H:i:s" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+</div>
+<div>
+    <h2><a href="/">返回主页</a></h2>
+</div>
+</body>
+</html>
