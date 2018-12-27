@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>test</title>
+    <title>跑流量后台</title>
 </head>
 <style>
 body.login {
@@ -16,7 +16,7 @@ body.login {
 }
 
 .login #header h1 {
-    font-size: 18px;
+
     color: white;
     font-weight: 300;
     font-size: 24px;
@@ -24,6 +24,14 @@ body.login {
 
 .login #content {
     padding: 20px 20px 0;
+    height: 80px;
+}
+
+.login #content a{
+    margin-top: 10px;
+    margin-left: 80px;
+    font-size: 20px;
+
 }
 
 .login #container {
@@ -80,21 +88,33 @@ body.login {
 
 .login .password-reset-link {
     text-align: center;
+
 }
+
+
+
 </style>
 <body class=" login">
-<div id="container">
+<div id="container" style="margin-top: 300px">
      <!-- Header -->
     <div id="header">
         <div id="branding">
-            <h1 id="site-name">跑流量任务</h1>
+            <h1 id="site-name">请选择任务</h1>
         </div>
     </div>
     <div id="content" class="colM">
-    <div id="content-main">
+        <div>
+            <a href="/pao/">开始跑流量</a>
+            <a href="/get/">开始查询</a>
+        </div>
+
+        <div style="margin-top: 10px">
+            <a href="/results/">任务结果</a>
+            <a href="/uploaded/">已上传任务</a>
+        </div>
     </div>
-    </div>
-    <h3 style="margin-left: 350px"><a href="/results/">查看任务</a></h3>
+
+
 </div>
 </body>
 </html>
