@@ -6,3 +6,5 @@
 upload/
 paoliuliang_server.py
 00*
+fabfile.py
+other/
