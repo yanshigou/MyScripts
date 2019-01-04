@@ -48,3 +48,34 @@
 * [我的博客](https://www.dogebug.cn)上有针对这个项目的详细文章
 
 2018-12-27
+
+
+
+**运行了很长时间的celery之后，发现有任务一直没有完成，也没有失败，一直处于执行当中，就去查看了celery的log**。
+
+**截取了少部分error：**
+
+```python
+  File "/home/ubuntu/www/cmxcelery/kkwork/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 205, in execute
+    self.errorhandler(self, exc, value)
+  File "/home/ubuntu/www/cmxcelery/kkwork/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+OperationalError: (2006, 'MySQL server has gone away')
+```
+
+怀疑是执行任务时间过长（一个任务大概会花4、5个小时），mysql连接时间过长，但并没有操作mysql（只会在开始和结束的时候进行mysql操作），导致client和MySQL server之间的链接断开了。
+
+
+
+最后的解决办法为 主动断开连接 再进行连接数据库操作
+
+```python
+from django.db import connection
+from time import sleep
+
+
+connection.close()
+sleep(10)
+```
+
+2019-01-04
