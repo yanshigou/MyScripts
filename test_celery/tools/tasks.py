@@ -7,6 +7,8 @@ import xlwt
 from datetime import datetime
 from paopao.models import PLL
 import requests
+from django.db import connection
+from time import sleep
 
 
 SERVER_URL = "http://ip地址/commander/paopao/"
@@ -28,6 +30,10 @@ def test_task(time1):
     cols = sheet1.col_values(0)  # 获取列内容
     ok_imeis = []
     offline_imeis = []
+
+    # 主动断开数据库连接 避免 OperationalError(2006, 'MySQL server has gone away') 错误
+    connection.close()
+    sleep(10)
 
     for col in cols:
         # print col
@@ -103,6 +109,10 @@ def get_imei(time1):
     cols = sheet1.col_values(0)  # 获取列内容
     ok_imeis = []
     no_imeis = []
+
+    # 主动断开数据库连接 避免 OperationalError(2006, 'MySQL server has gone away') 错误
+    connection.close()
+    sleep(10)
 
     for col in cols:
         # print col
