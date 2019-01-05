@@ -27,6 +27,18 @@ table.gridtable td {
 	border-color: #666666;
 }
 </style>
+<script>
+
+    function delfile() {
+            var msg = "您真的确定要删除吗？";
+            if (confirm(msg)==true){
+                alert("删除成功");
+                return true;
+            }else{
+                return false;
+        }
+}
+</script>
 <body>
 <div>
     <h2>任务执行结果：</h2>
@@ -39,6 +51,7 @@ table.gridtable td {
             <td>开始时间</td>
             <td>完成时间</td>
             <td>文件下载</td>
+            <td>文件删除</td>
 
         </tr>
         {% for row in rows %}
@@ -63,6 +76,11 @@ table.gridtable td {
             {% elif row.status == 'FAILURE' %}
                 <td style="color:red">任务失败，请检查文件格式或联系管理后重试</td>
                 <td style="color:red">任务失败，请检查文件格式或联系管理后重试</td>
+            {% endif %}
+            {% if row.status == 'STARTED' %}
+                <td style="color:red">进行中的任务无法删除</td>
+            {% else %}
+                <td style="color:red"><a href="{% url 'delfile'  row.task_id  %}" onclick="return delfile()" >删除</a></td>
             {% endif %}
 
         </tr>
