@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.shortcuts import render
 from django.views.generic.base import View
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
 from forms import ImeiInfoForm, LoginForm
 from models import PLL, UserProfile
@@ -11,6 +11,8 @@ from django.shortcuts import render_to_response
 from tools.db import Db
 from datetime import datetime
 from tools.mixin_utils import LoginRequiredMixin
+import os
+
 
 
 
@@ -30,8 +32,6 @@ class Results(LoginRequiredMixin, View):
 class Index(View):
     def get(self, request):
         return render(request, 'index.html')
-
-
 
 
 class UploadView(LoginRequiredMixin, View):
@@ -160,3 +160,27 @@ class Uploaded(LoginRequiredMixin, View):
         return render(request, 'uploaded.html', {
             'all': all
         })
+
+
+class DelFile(LoginRequiredMixin, View):
+    def get(self, request, task_id):
+        try:
+            task = PLL.objects.get(task_id=task_id)
+            filename = task.filename
+            download = task.download
+            task.delete()
+            print(filename)
+            print(download)
+            # src_filename = 'D:\\dzt\\Work_CMX\\paoliuliang\\celery_imei\\test_celery\\upload\\%s' % filename
+            # src_download = 'D:\\dzt\\Work_CMX\\paoliuliang\\celery_imei\\test_celery\\%s' % download
+            src_filename = '/home/ubuntu/www/cmxcelery/upload/%s' % filename
+            src_download = '/home/ubuntu/www/cmxcelery/%s' % download
+            if os.path.exists(src_filename) and os.path.exists(src_download):
+                os.remove(src_filename)
+                os.remove(src_download)
+                print('ok')
+            else:
+                print('notfind file')
+            return HttpResponseRedirect('/results/')
+        except:
+            return HttpResponseRedirect('/results/')
