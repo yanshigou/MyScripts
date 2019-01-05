@@ -13,10 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
-from paopao.views import UploadView, Results, Download, LoginView, GetView, Index, Uploaded
-
+from paopao.views import UploadView, Results, Download, LoginView, GetView, Index, Uploaded, DelFile
+import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', Index.as_view()),
@@ -26,4 +26,11 @@ urlpatterns = [
     url(r'^login/$', LoginView.as_view()),
     url(r'^get/$', GetView.as_view()),
     url(r'^uploaded/$', Uploaded.as_view()),
+    url(r'^delfile/(?P<task_id>.*)/$', DelFile.as_view(), name='delfile'),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+   ]
