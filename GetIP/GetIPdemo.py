@@ -1,3 +1,4 @@
+# encoding: utf-8
 import re
 import numpy as np
 from datetime import datetime
@@ -5,8 +6,9 @@ time1 = datetime.now()
 
 
 #提取ip地址，去重，获取不同ip个数
-def GetAccessIp(input_file_name,output_file_name):
+def GetAccessIp(input_file_name, output_file_name):
     sep = '\n'
+    sep1 = '*'*50 + '\n'
     sep1 = '*'*50 + '\n'
     sep2 = '\n' + '*'*50 + '\n\n'
     ip_list=[]
@@ -189,8 +191,18 @@ def GetErrorIP(input_file_name2,output_file_name2):
         ip = re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
         # print(ip)
 
-        err = re.findall(r'(?<=\d{6} ).*(?=, client)', str(each), re.S)
-        err_list.append(err[0])
+        err = re.findall(r'(?<=: ).*(?=, client)', str(each), re.S)
+        if err == []:
+            err = re.findall(r'(?<=: ).*', str(each), re.S)
+            e = err[0].split()[0:]
+        else:
+            e = err[0].split()[1:]
+        # err_list.append(err[0])
+        # print(err[0])
+        print(err)
+        error = ' '.join(e)
+        err_list.append(error)
+        # print(error)
 
         # alert = re.findall(r'alert', str(each), re.S)
         # alert_list.append(alert[0])
@@ -245,13 +257,12 @@ def GetErrorIP(input_file_name2,output_file_name2):
     print("error提取完毕")
 
 
-
 if __name__ == '__main__':
-    input_file_name = "C:\\Users\\Administrator\\Desktop\\log\\access2018-11-30.log"
-    output_file_name = "C:\\Users\\Administrator\\Desktop\\log\\output2018-11-30.txt"
+    input_file_name = "D:\\work_CMX\\log\\access2019-01-17.log"
+    output_file_name = "D:\\work_CMX\\log\\output2019-01-17.txt"
     GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "C:\\Users\\Administrator\\Desktop\\log\\error2018-11-30.log"
-    # output_file_name2 = "C:\\Users\\Administrator\\Desktop\\log\\output_error2018-11-18.txt"
+    input_file_name2 = "D:\\work_CMX\\log\\error2019-01-17.log"
+    # output_file_name2 = "D:\\work_CMX\\log\\output_error2018-11-18.txt"
     GetErrorIP(input_file_name2, output_file_name)
     time2 = datetime.now()
     print('总共耗时：' + str(time2 - time1) + 's')
