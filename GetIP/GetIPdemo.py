@@ -191,6 +191,7 @@ def GetErrorIP(input_file_name2,output_file_name2):
         ip = re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
         # print(ip)
 
+<<<<<<< HEAD
         err = re.findall(r'(?<=: ).*(?=, client)', str(each), re.S)
         if err == []:
             err = re.findall(r'(?<=: ).*', str(each), re.S)
@@ -200,6 +201,12 @@ def GetErrorIP(input_file_name2,output_file_name2):
         # err_list.append(err[0])
         # print(err[0])
         print(err)
+=======
+        err = re.findall(r'(?<=\*).*(?=, client)', str(each), re.S)
+        # err_list.append(err[0])
+        # print(err[0])
+        e = err[0].split()[1:]
+>>>>>>> 94672694da6f7f1e8ee0365f2fcc1b6ef1915c03
         error = ' '.join(e)
         err_list.append(error)
         # print(error)
@@ -258,10 +265,17 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     input_file_name = "D:\\work_CMX\\log\\access2019-01-17.log"
     output_file_name = "D:\\work_CMX\\log\\output2019-01-17.txt"
     GetAccessIp(input_file_name, output_file_name)
     input_file_name2 = "D:\\work_CMX\\log\\error2019-01-17.log"
+=======
+    input_file_name = "D:\\work_CMX\\log\\access2019-01-11.log"
+    output_file_name = "D:\\work_CMX\\log\\output2019-01-11.txt"
+    GetAccessIp(input_file_name, output_file_name)
+    input_file_name2 = "D:\\work_CMX\\log\\error2019-01-11.log"
+>>>>>>> 94672694da6f7f1e8ee0365f2fcc1b6ef1915c03
     # output_file_name2 = "D:\\work_CMX\\log\\output_error2018-11-18.txt"
     GetErrorIP(input_file_name2, output_file_name)
     time2 = datetime.now()

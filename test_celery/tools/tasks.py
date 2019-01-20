@@ -9,6 +9,7 @@ from paopao.models import PLL
 import requests
 from django.db import connection
 from time import sleep
+from .email_send import send_register_email, listen_nginx
 
 
 SERVER_URL = "http://ip地址/commander/paopao/"
@@ -30,10 +31,6 @@ def test_task(time1):
     cols = sheet1.col_values(0)  # 获取列内容
     ok_imeis = []
     offline_imeis = []
-
-    # 主动断开数据库连接 避免 OperationalError(2006, 'MySQL server has gone away') 错误
-    connection.close()
-    sleep(10)
 
     for col in cols:
         # print col
@@ -63,11 +60,11 @@ def test_task(time1):
                 print("error imei=" + imei)
 
     f = xlwt.Workbook()
-    sheet1 = f.add_sheet('validIMEI', cell_overwrite_ok=True)
+    sheet1 = f.add_sheet('success', cell_overwrite_ok=True)
     for i in range(0, len(ok_imeis)):
         sheet1.write(i, 0, str(ok_imeis[i]))
 
-    sheet2 = f.add_sheet('invalidIMEI', cell_overwrite_ok=True)
+    sheet2 = f.add_sheet('fail', cell_overwrite_ok=True)
     for i in range(0, len(offline_imeis)):
         sheet2.write(i, 0, offline_imeis[i])
 
@@ -86,6 +83,9 @@ def test_task(time1):
 
     f.save(new_imei_file)
     count = len(ok_imeis) + len(offline_imeis)
+
+    connection.close()
+    sleep(10)
 
     p = PLL.objects.get(starttime=time1)
     p.oktime = datetime.now()
@@ -109,10 +109,6 @@ def get_imei(time1):
     cols = sheet1.col_values(0)  # 获取列内容
     ok_imeis = []
     no_imeis = []
-
-    # 主动断开数据库连接 避免 OperationalError(2006, 'MySQL server has gone away') 错误
-    connection.close()
-    sleep(10)
 
     for col in cols:
         # print col
@@ -140,14 +136,14 @@ def get_imei(time1):
                 print("error imei=" + imei)
 
     f = xlwt.Workbook()
-    sheet1 = f.add_sheet('OK_IMEI', cell_overwrite_ok=True)
+    sheet1 = f.add_sheet('success_IMEI', cell_overwrite_ok=True)
     for i in range(0, len(ok_imeis)):
         sheet1.write(i, 0, str(ok_imeis[i]))
-        sheet1.write(i, 1, "OK")
-    sheet2 = f.add_sheet('No_IMEI', cell_overwrite_ok=True)
+        sheet1.write(i, 1, "success")
+    sheet2 = f.add_sheet('fail_IMEI', cell_overwrite_ok=True)
     for i in range(0, len(no_imeis)):
         sheet2.write(i, 0, no_imeis[i])
-        sheet2.write(i, 1, "No")
+        sheet2.write(i, 1, "fail")
 
     print(filename)
     print(type(filename))
@@ -165,9 +161,29 @@ def get_imei(time1):
     f.save(new_imei_file)
     count = len(ok_imeis) + len(no_imeis)
 
+    connection.close()
+    sleep(10)
+
     p = PLL.objects.get(starttime=time1)
     p.oktime = datetime.now()
     p.download = new_imei_file
     p.count = count
     p.save()
     return
+
+
+@shared_task(track_started=True)
+def listen_ngx_celery():
+    try:
+        res = listen_nginx()
+        if res.status_code != 200:
+            print('not 200', datetime.now())
+            send_register_email('dongzhetong@cmx-iot.com', res)
+            # send_register_email('daijian@cmx-iot.com', res)
+        else:
+            print("is's ok", datetime.now())
+    except Exception as e:
+        print('Exception！', datetime.now())
+        send_register_email('dongzhetong@cmx-iot.com', None, e)
+        # send_register_email('daijian@cmx-iot.com', None, e)
+

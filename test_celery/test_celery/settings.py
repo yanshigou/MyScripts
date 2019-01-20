@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for test_celery project.
 
@@ -11,19 +12,32 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 from __future__ import absolute_import, unicode_literals
 import os
-
+from celery.schedules import crontab
+import djcelery
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# celery setting
 
-#celery setting
-import djcelery
 djcelery.setup_loader()
 BROKER_URL = 'django://'
 BROKER_POOL_LIMIT = 0
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_TIMEZONE='Asia/Shanghai'
+CELERY_ENABLE_UTC = False
+CELERYD_MAX_TASKS_PER_CHILD = 5
+CELERY_IMPORTS = ('tools.tasks',)
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'  # 定时任务
+# 下面是定时任务的设置，我一共配置了三个定时任务.
+CELERYBEAT_SCHEDULE = {
+    # 定时任务:　每1分钟，执行任务(listen_ngx_celery)
+    u'监听手表服务器': {
+        'task': 'tools.tasks.listen_ngx_celery',
+        'schedule': crontab(minute='*'),
+        "args": ()
+    },
+}
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '1=y11zif%nqm2zd!u3=kmuvniw-vnrdum0%s$3@-u@sw+5tvtp'
@@ -32,6 +46,23 @@ SECRET_KEY = '1=y11zif%nqm2zd!u3=kmuvniw-vnrdum0%s$3@-u@sw+5tvtp'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# debug_tools ip
+INTERNAL_IPS = ('127.0.0.1',)
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]
 
 
 # Application definition
@@ -46,7 +77,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'djcelery',
     'paopao',
-    'kombu.transport.django'
+    'kombu.transport.django',
+    'debug_toolbar',
 
 ]
 AUTH_USER_MODEL = 'paopao.UserProfile'
@@ -59,6 +91,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'test_celery.urls'
@@ -66,8 +99,7 @@ ROOT_URLCONF = 'test_celery.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,3 +173,11 @@ STATICFILES_DIRS = (
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'upload/')
 MEDIA_URL = '/upload/'
+
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'yanshigou@foxmail.com'
+EMAIL_HOST_PASSWORD = ''   # 邮箱独立授权码
+# EMAIL_USER_TLS = False   # 之前无法发送邮箱验证就是因为这里
+EMAIL_USE_SSL = True
+EMAIL_FROM = EMAIL_HOST_USER
