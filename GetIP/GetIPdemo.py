@@ -69,7 +69,7 @@ def GetAccessIp(input_file_name, output_file_name):
             count1 = 1
 
 
-    # #计算每种请求地址访问次数
+    # 计算每种请求地址访问次数
     # count2 = 1
     # countlist2 = []
     # requestlist2.sort()
@@ -84,10 +84,10 @@ def GetAccessIp(input_file_name, output_file_name):
     #     else:
     #         countlist2.append(count2)
     #         count2 = 1
-    # # print(r)
-    # # print(countlist2)
+    # print(r)
+    # print(countlist2)
 
-    #计算每秒最大访问量
+    # 计算每秒最大访问量
     count = 1
     countlist = []
     tlists = []
@@ -157,9 +157,9 @@ def GetAccessIp(input_file_name, output_file_name):
     fout.write("单秒最大访问量时间:%s" % maxtime[-1] + sep)
     for h in range(len(a)-1):
         fout.write("%s点至%s点，访问量：%s次" % (a[h], a[h]+1, b[h])+sep)
-    # API次数
+    # # API次数
     # for q in range(len(c)-1):
-    #     fout.write("%s，%s次"%(c[q],d[q]) + sep)
+    #     fout.write("%s，%s次"%(c[q], d[q]) + sep)
 
     for i in range(1, len(maxtime)+1):
         fout.write("%s，%s次" % (maxtime[-i], maxcountlist[-i]) + sep)
@@ -191,22 +191,16 @@ def GetErrorIP(input_file_name2,output_file_name2):
         ip = re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
         # print(ip)
 
-<<<<<<< HEAD
         err = re.findall(r'(?<=: ).*(?=, client)', str(each), re.S)
         if err == []:
             err = re.findall(r'(?<=: ).*', str(each), re.S)
             e = err[0].split()[0:]
         else:
+            print(err)
             e = err[0].split()[1:]
         # err_list.append(err[0])
         # print(err[0])
-        print(err)
-=======
-        err = re.findall(r'(?<=\*).*(?=, client)', str(each), re.S)
-        # err_list.append(err[0])
-        # print(err[0])
-        e = err[0].split()[1:]
->>>>>>> 94672694da6f7f1e8ee0365f2fcc1b6ef1915c03
+        # print(err)
         error = ' '.join(e)
         err_list.append(error)
         # print(error)
@@ -265,17 +259,10 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    input_file_name = "D:\\work_CMX\\log\\access2019-01-17.log"
-    output_file_name = "D:\\work_CMX\\log\\output2019-01-17.txt"
+    input_file_name = "D:\\work_CMX\\log\\access2019-02-22.log"
+    output_file_name = "D:\\work_CMX\\log\\output2019-02-22.txt"
     GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "D:\\work_CMX\\log\\error2019-01-17.log"
-=======
-    input_file_name = "D:\\work_CMX\\log\\access2019-01-11.log"
-    output_file_name = "D:\\work_CMX\\log\\output2019-01-11.txt"
-    GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "D:\\work_CMX\\log\\error2019-01-11.log"
->>>>>>> 94672694da6f7f1e8ee0365f2fcc1b6ef1915c03
+    input_file_name2 = "D:\\work_CMX\\log\\error2019-02-22.log"
     # output_file_name2 = "D:\\work_CMX\\log\\output_error2018-11-18.txt"
     GetErrorIP(input_file_name2, output_file_name)
     time2 = datetime.now()
