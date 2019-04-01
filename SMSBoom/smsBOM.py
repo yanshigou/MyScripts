@@ -5,9 +5,9 @@ from threading import Thread
 
 class MessageBoom:
     def __init__(self):
-        self.phone = "********"
+        self.phone = "17666424883"
         self.num = 0
-        self.phantomjs = "E:\Python 3.6.2\phantomjs-2.1.1\phantomjs.exe"
+        self.phantomjs = "D:\\blog\\smsBang\\smsBang\\phantomjs-2.1.1-windows\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe"
 
     def send_yzm(self, name):
         # button.click()
@@ -120,7 +120,7 @@ class MessageBoom:
 
     def Youku(self, name):
         while True:
-            driver = webdriver.Chrome()
+            driver = webdriver.Chrome(executable_path='D:\\blog\\smsBang\\smsBang\\chromedriver_win32\\chromedriver.exe')
             # driver = webdriver.PhantomJS(executable_path=self.phantomjs)
             driver.get("http://www.youku.com")
             time.sleep(1)
@@ -137,7 +137,7 @@ class MessageBoom:
 
     def Youku2(self, name):
         while True:
-            driver = webdriver.Chrome()
+            driver = webdriver.Chrome(executable_path='D:\\blog\\smsBang\\smsBang\\chromedriver_win32\\chromedriver.exe')
             # driver = webdriver.PhantomJS(executable_path=self.phantomjs)
             driver.get("http://www.youku.com")
             time.sleep(1)
@@ -172,7 +172,7 @@ class MessageBoom:
 
     def Aiqiyi(self, name):
         while True:
-            driver = webdriver.Chrome()
+            driver = webdriver.Chrome(executable_path='D:\\blog\\smsBang\\smsBang\\chromedriver_win32\\chromedriver.exe')
             # driver = webdriver.PhantomJS(executable_path=self.phantomjs)
             driver.get('http://www.iqiyi.com/iframe/smslogin?from_url=http%3A%2F%2Fvip.iqiyi.com%2Ffirstsix-new-pc.html')
             time.sleep(1)
