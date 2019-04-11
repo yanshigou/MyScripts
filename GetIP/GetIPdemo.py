@@ -5,7 +5,7 @@ from datetime import datetime
 time1 = datetime.now()
 
 
-#提取ip地址，去重，获取不同ip个数
+# 提取ip地址，去重，获取不同ip个数
 def GetAccessIp(input_file_name, output_file_name):
     sep = '\n'
     sep1 = '*'*50 + '\n'
@@ -19,19 +19,20 @@ def GetAccessIp(input_file_name, output_file_name):
 
     fLog = open(input_file_name)
     for each in fLog:
-        #匹配ip
-        ip=re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
+        # 匹配ip
+        ip = re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
+        if ip == []:
+            continue
         ip_list.append(ip[0])
-
         # 分割log中每行空格
         iptime = each.split()[3]
         # print(iptime[-8:])  #为00:00:00格式时间
         timelist.append(iptime)
-        #匹配每个小时
+        # 匹配每个小时
         alltime = re.findall(r'\:(20|21|22|23|[0-1]\d)', str(iptime), re.S)
         alltimelist.append(int(alltime[0]))
 
-        #匹配请求类型
+        # 匹配请求类型
         request = re.findall(r'(?<= ").*(?=\?)', str(each), re.S)
         if request == []:
             request = re.findall(r'(?<= ").*(?= HTTP)', str(each), re.S)
@@ -259,10 +260,10 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
 
 if __name__ == '__main__':
-    input_file_name = "D:\\work_CMX\\log\\access2019-02-22.log"
-    output_file_name = "D:\\work_CMX\\log\\output2019-02-22.txt"
+    input_file_name = "D:\\work_CMX\\log\\access2019-04-11.log"
+    output_file_name = "D:\\work_CMX\\log\\output2019-04-11.txt"
     GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "D:\\work_CMX\\log\\error2019-02-22.log"
+    input_file_name2 = "D:\\work_CMX\\log\\error2019-04-11.log"
     # output_file_name2 = "D:\\work_CMX\\log\\output_error2018-11-18.txt"
     GetErrorIP(input_file_name2, output_file_name)
     time2 = datetime.now()
