@@ -2,6 +2,7 @@
 import re
 import numpy as np
 from datetime import datetime
+import tkinter as tk
 time1 = datetime.now()
 
 
@@ -132,8 +133,8 @@ def GetAccessIp(input_file_name, output_file_name):
 
     print("access不同ip个数:%s " % len(ips))
 
-    #写
-    fout = open(output_file_name, 'a+')
+    # 写 python3中需要encoding='utf-8'
+    fout = open(output_file_name, 'a+', encoding='utf-8')
     a = all
     b = countlist1
 
@@ -231,10 +232,8 @@ def GetErrorIP(input_file_name2,output_file_name2):
     # print("alert个数:%s " % len(alert_list))
     # print("error个数:%s " % len(errorL))
 
-
-
-    #写
-    fout = open(output_file_name2, "a")
+    # 写 python3中需要encoding='utf-8'
+    fout = open(output_file_name2, "a", encoding='utf-8')
     # for each in ips:
     #   # print(each)
     #   fout.write(each + sep)
@@ -259,16 +258,19 @@ def GetErrorIP(input_file_name2,output_file_name2):
     print("error提取完毕")
 
 
-if __name__ == '__main__':
-    input_file_name = "D:\\work_CMX\\log\\access2019-04-11.log"
-    output_file_name = "D:\\work_CMX\\log\\output2019-04-11.txt"
-    GetAccessIp(input_file_name, output_file_name)
-    input_file_name2 = "D:\\work_CMX\\log\\error2019-04-11.log"
-    # output_file_name2 = "D:\\work_CMX\\log\\output_error2018-11-18.txt"
-    GetErrorIP(input_file_name2, output_file_name)
-    time2 = datetime.now()
-    print('总共耗时：' + str(time2 - time1) + 's')
+def TkWindow():
+    root = tk.Tk()
+    root.title("---NginxLog分析器---")
+    root.mainloop()
 
-## (?<=\d{6} ).*(?=, client) 尝试了许久获取的截取error.log中报错信息\
-## (20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d 匹配时间
-## (?<= ").*(?=\?) 匹配GET POST PUT地址
+
+if __name__ == '__main__':
+    # input_file_name = "D:\\work_CMX\\log\\access2019-04-11.log"
+    # output_file_name = "D:\\work_CMX\\log\\output2019-04-11.txt"
+    # GetAccessIp(input_file_name, output_file_name)
+    # input_file_name2 = "D:\\work_CMX\\log\\error2019-04-11.log"
+    # # output_file_name2 = "D:\\work_CMX\\log\\output_error2018-11-18.txt"
+    # GetErrorIP(input_file_name2, output_file_name)
+    # time2 = datetime.now()
+    # print('总共耗时：' + str(time2 - time1) + 's')
+    TkWindow()
