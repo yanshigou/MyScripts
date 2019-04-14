@@ -3,6 +3,7 @@ import re
 import numpy as np
 from datetime import datetime
 import tkinter as tk
+import tkinter.filedialog
 time1 = datetime.now()
 
 
@@ -21,7 +22,7 @@ def GetAccessIp(input_file_name, output_file_name):
     fLog = open(input_file_name)
     for each in fLog:
         # 匹配ip
-        ip = re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
+        ip = re.findall(r'(?<![.\d])(?:\d{1,3}\.){3}\d{1,3}(?![.\d])', str(each), re.S)
         if ip == []:
             continue
         ip_list.append(ip[0])
@@ -30,7 +31,7 @@ def GetAccessIp(input_file_name, output_file_name):
         # print(iptime[-8:])  #为00:00:00格式时间
         timelist.append(iptime)
         # 匹配每个小时
-        alltime = re.findall(r'\:(20|21|22|23|[0-1]\d)', str(iptime), re.S)
+        alltime = re.findall(r':(20|21|22|23|[0-1]\d)', str(iptime), re.S)
         alltimelist.append(int(alltime[0]))
 
         # 匹配请求类型
@@ -190,7 +191,7 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
     fLog = open(input_file_name2)
     for each in fLog:
-        ip = re.findall(r'(?<![\.\d])(?:\d{1,3}\.){3}\d{1,3}(?![\.\d])', str(each), re.S)
+        ip = re.findall(r'(?<![.\d])(?:\d{1,3}\.){3}\d{1,3}(?![.\d])', str(each), re.S)
         # print(ip)
 
         err = re.findall(r'(?<=: ).*(?=, client)', str(each), re.S)
@@ -259,9 +260,60 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
 
 def TkWindow():
-    root = tk.Tk()
     root.title("---NginxLog分析器---")
+
+    btn = tk.Button(root, text='选择文件', command=files)
+    lb.pack()
+    # lb.grid(row=0, column=0, pady=10)
+    btn.pack()
+    # btn.grid(row=20, columnspan=20, pady=20)
+
+    root.geometry('400x200+800+400')
+    root.maxsize(400, 200)
+    root.minsize(400, 200)
     root.mainloop()
+
+
+def file():
+    filename = tk.filedialog.askopenfilename()
+    if filename != "":
+        lb.config(text="您选择的文件是："+filename)
+    else:
+        lb.config(text="您没有选择任何文件：" + filename)
+
+
+def files():
+    filenames = tkinter.filedialog.askopenfilenames()
+    if len(filenames) != 0:
+        string_filename = ""
+        for i in range(0, len(filenames)):
+            string_filename += str(filenames[i]) + "\n"
+            path = str(filenames[i])
+            # 传access.log
+            # if path[-10:] == "access.log":
+            #     output_access = path[:-4] + str(datetime.now())[0:10] + '.txt'
+            #     print(path)
+            #     print(output_access)
+            # elif path[-9:] == "error.log":
+            #     output_error = path[:-4] + str(datetime.now())[0:10] + '.txt'
+            #     print('error')
+            #     print(path)
+            #     print(output_error)
+
+            # 传access2019-04-14.log
+            if "access" in path:
+                output_access = path[:-4] + '.txt'
+                print(path)
+                print(output_access)
+                GetAccessIp(path, output_access)
+            elif "error" in path:
+                output_error = path[:-4] + '.txt'
+                print(path)
+                print(output_error)
+                GetErrorIP(path, output_error)
+        lb.config(text="您选择的文件是：" + string_filename + "\n分析完成！！！！！！")
+    else:
+        lb.config(text="您没有选择任何文件")
 
 
 if __name__ == '__main__':
@@ -273,4 +325,7 @@ if __name__ == '__main__':
     # GetErrorIP(input_file_name2, output_file_name)
     # time2 = datetime.now()
     # print('总共耗时：' + str(time2 - time1) + 's')
+    root = tk.Tk()
+    lb = tk.Label(root, text="您没有选择任何文件")
     TkWindow()
+
