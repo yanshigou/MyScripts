@@ -9,3 +9,5 @@ paoliuliang_server.py
 fabfile.py
 other/
 __pycache__
+build/
+*.spec
