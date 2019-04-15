@@ -268,9 +268,9 @@ def TkWindow():
     btn.pack()
     # btn.grid(row=20, columnspan=20, pady=20)
 
-    root.geometry('400x200+800+400')
-    root.maxsize(400, 200)
-    root.minsize(400, 200)
+    root.geometry('500x300+800+400')
+    root.maxsize(500, 300)
+    root.minsize(500, 300)
     root.mainloop()
 
 
@@ -287,7 +287,6 @@ def files():
     if len(filenames) != 0:
         string_filename = ""
         for i in range(0, len(filenames)):
-            string_filename += str(filenames[i]) + "\n"
             path = str(filenames[i])
             # 传access.log
             # if path[-10:] == "access.log":
@@ -301,17 +300,21 @@ def files():
             #     print(output_error)
 
             # 传access2019-04-14.log
-            if "access" in path:
+            if "access" in path and ".log" in path:
                 output_access = path[:-4] + '.txt'
                 print(path)
                 print(output_access)
                 GetAccessIp(path, output_access)
-            elif "error" in path:
+                string_filename += str(filenames[i]) + "  分析完成！！" + "\n"
+            elif "error" in path and ".log" in path:
                 output_error = path[:-4] + '.txt'
                 print(path)
                 print(output_error)
                 GetErrorIP(path, output_error)
-        lb.config(text="您选择的文件是：" + string_filename + "\n分析完成！！！！！！")
+                string_filename += str(filenames[i]) + "  分析完成！！" + "\n"
+            else:
+                string_filename += str(filenames[i]) + "  分析失败！！" + "\n"
+            lb.config(text="您选择的文件是：" + string_filename)
     else:
         lb.config(text="您没有选择任何文件")
 
