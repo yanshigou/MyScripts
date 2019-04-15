@@ -268,9 +268,9 @@ def TkWindow():
     btn.pack()
     # btn.grid(row=20, columnspan=20, pady=20)
 
-    root.geometry('500x300+800+400')
-    root.maxsize(500, 300)
-    root.minsize(500, 300)
+    root.geometry('500x200+800+400')
+    # root.maxsize(500, 300)
+    # root.minsize(500, 300)
     root.mainloop()
 
 
@@ -305,15 +305,15 @@ def files():
                 print(path)
                 print(output_access)
                 GetAccessIp(path, output_access)
-                string_filename += str(filenames[i]) + "  分析完成！！" + "\n"
+                string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
             elif "error" in path and ".log" in path:
                 output_error = path[:-4] + '.txt'
                 print(path)
                 print(output_error)
                 GetErrorIP(path, output_error)
-                string_filename += str(filenames[i]) + "  分析完成！！" + "\n"
+                string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
             else:
-                string_filename += str(filenames[i]) + "  分析失败！！" + "\n"
+                string_filename += str(filenames[i]) + " 分析失败！！" + "\n"
             lb.config(text="您选择的文件是：" + string_filename)
     else:
         lb.config(text="您没有选择任何文件")
