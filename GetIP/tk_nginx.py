@@ -5,6 +5,7 @@ from datetime import datetime
 import tkinter as tk
 import tkinter.filedialog
 time1 = datetime.now()
+import traceback
 
 
 # 提取ip地址，去重，获取不同ip个数
@@ -112,7 +113,7 @@ def GetAccessIp(input_file_name, output_file_name):
     # print(b)
     # countlist.sort(key=countlist.index)
 
-    #取出最大访问量的时间
+    # 取出最大访问量的时间
     bb = list(ba[-20:])
     print(bb)
     maxtime = []
@@ -143,11 +144,9 @@ def GetAccessIp(input_file_name, output_file_name):
     # c = r
     # d = countlist2
 
-
-
     # for each in ips:
-      # print(each)
-      # fout.write(each + sep)
+    #     print(each)
+    #     fout.write(each + sep)
     # ip_count = {}
     # for i in ips:
     #     ip_count[i] = ip_list.count(i)
@@ -242,7 +241,8 @@ def GetErrorIP(input_file_name2,output_file_name2):
     for each in errs:
         fout.write(each + sep)
 
-    fout.write(sep1 + timelist[0] + ' 至 ' + timelist[-1] + sep)
+    if len(timelist) > 1:
+        fout.write(sep1 + timelist[0] + ' 至 ' + timelist[-1] + sep)
     # fout.write("nginx error出现ip个数:%s "% len(ips) + sep)
     fout.write("error类型个数:%s " % len(errs) + sep)
     fout.write("报错总数:%s " % len(err_list) + sep)
@@ -300,21 +300,27 @@ def files():
             #     print(output_error)
 
             # 传access2019-04-14.log
-            if "access" in path and ".log" in path:
-                output_access = path[:-4] + '.txt'
-                print(path)
-                print(output_access)
-                GetAccessIp(path, output_access)
-                string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
-            elif "error" in path and ".log" in path:
-                output_error = path[:-4] + '.txt'
-                print(path)
-                print(output_error)
-                GetErrorIP(path, output_error)
-                string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
-            else:
-                string_filename += str(filenames[i]) + " 分析失败！！" + "\n"
-            lb.config(text="您选择的文件是：" + string_filename)
+            try:
+                if "access" in path and ".log" in path:
+                    output_access = path[:-4] + '.txt'
+                    print(path)
+                    print(output_access)
+                    GetAccessIp(path, output_access)
+                    string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
+                    print(str(filenames[i]) + " 分析完成！！" + "\n")
+                elif "error" in path and ".log" in path:
+                    output_error = path[:-4] + '.txt'
+                    print(path)
+                    print(output_error)
+                    GetErrorIP(path, output_error)
+                    string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
+                    print(str(filenames[i]) + " 分析完成！！" + "\n")
+                else:
+                    string_filename += str(filenames[i]) + " 分析失败！！" + "\n"
+                lb.config(text="您选择的文件是：" + string_filename)
+            except:
+                traceback.print_exc()
+                lb.config(text=string_filename+"分析失败，请检查格式是否正确\n或重新单个分析")
     else:
         lb.config(text="您没有选择任何文件")
 
