@@ -14,7 +14,7 @@ def sendMail(body, date, attachment=None, to_mail=None):
     try:
         smtp_server = 'smtp.qq.com'
         from_mail = 'yanshigou@foxmail.com'
-        mail_pass = 'tofjtcnjcplcbbbh'
+        mail_pass = '此处为邮箱密码'
         # to_mail = ['dongzhetong@cmx-iot.com', 'daijian@cmx-iot.com']  # 列表多个
         if to_mail == (None or []):
             print('None or []')
