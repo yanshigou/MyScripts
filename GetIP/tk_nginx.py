@@ -1,11 +1,12 @@
 # encoding: utf-8
 import re
 import numpy as np
+import traceback
+from email_send import sendMail
 from datetime import datetime
 import tkinter as tk
 import tkinter.filedialog
 time1 = datetime.now()
-import traceback
 
 
 # 提取ip地址，去重，获取不同ip个数
@@ -152,11 +153,22 @@ def GetAccessIp(input_file_name, output_file_name):
     #     ip_count[i] = ip_list.count(i)
     # print()
 
-    fout.write(sep1 + timelist[0] + '] 至 ' + timelist[-1] + ']' + sep)
+    # 新增日期转换
+    strtime1 = datetime.strptime(timelist[0][1:], '%d/%b/%Y:%H:%M:%S')
+    strtime2 = datetime.strptime(timelist[-1][1:], '%d/%b/%Y:%H:%M:%S')
+    strtime3 = datetime.strptime(maxtime[-1][1:], '%d/%b/%Y:%H:%M:%S')
+
+    date1 = strtime1.strftime('%Y-%m-%d')
+    date2 = strtime2.strftime('%Y-%m-%d')
+    if date1 == date2:
+        fout.write(date1+sep)
+    else:
+        fout.write(date1+'至'+date2+sep)
+    fout.write(sep1 + strtime1.strftime('%Y-%m-%d %H:%M:%S') + ' 至 ' + strtime2.strftime('%Y-%m-%d %H:%M:%S') + sep)
     fout.write("访问量:%s" % len(ip_list) + sep)
     fout.write("IP个数:%s " % len(ips) + sep)
     fout.write("单秒最大访问量:%s" % max(countlist) + sep)
-    fout.write("单秒最大访问量时间:%s" % maxtime[-1] + sep)
+    fout.write("单秒最大访问量时间:%s" % strtime3.strftime('%Y-%m-%d %H:%M:%S') + sep)
     for h in range(len(a)-1):
         fout.write("%s点至%s点，访问量：%s次" % (a[h], a[h]+1, b[h])+sep)
     # # API次数
@@ -261,11 +273,22 @@ def GetErrorIP(input_file_name2,output_file_name2):
 
 def TkWindow():
     root.title("---NginxLog分析器---")
+    lf = tk.LabelFrame(root, text='请选择收件人')
+    lf.pack()
 
+    rb1 = tk.Checkbutton(lf, text='dzt', variable=dzt)
+    rb2 = tk.Checkbutton(lf, text='dyh', variable=dyh)
+    rb3 = tk.Checkbutton(lf, text='dj', variable=dj)
+    rb1.grid(row=0, column=0, padx=11)
+    rb2.grid(row=0, column=1, padx=11)
+    rb3.grid(row=0, column=2, padx=11)
     btn = tk.Button(root, text='选择文件', command=files)
+    btn2 = tk.Button(root, text='一件发送邮件', command=file)
     lb.pack()
+    lb2.pack()
     # lb.grid(row=0, column=0, pady=10)
     btn.pack()
+    btn2.pack()
     # btn.grid(row=20, columnspan=20, pady=20)
 
     root.geometry('500x200+800+400')
@@ -276,14 +299,37 @@ def TkWindow():
 
 def file():
     filename = tk.filedialog.askopenfilename()
+    datetime_now = datetime.now()
+    date = datetime_now.strftime("%Y-%m-%d")
+    print(dzt.get(), dyh.get(), dj.get())
+    to_mail = []
+    if dzt.get() == 1:
+        to_mail.append('dongzhetong@cmx-iot.com')
+    if dyh.get() == 1:
+        to_mail.append('dengyuhao@cmx-iot.com')
+    if dj.get() == 1:
+        to_mail.append('daijian@cmx-iot.com')
+    print(to_mail)
     if filename != "":
-        lb.config(text="您选择的文件是："+filename)
+        lb2.config(text="您选择的需要发送的文件："+filename)
+        f = open(filename, 'rb')
+        content = ''
+        for i in f.readlines():
+            content += i.decode('utf-8')
+        print(content)
+        res = sendMail(content, date, filename, to_mail)
+        if res is True:
+            lb2.config(text=filename + "发送成功")
+        else:
+            lb2.config(text=res)
     else:
-        lb.config(text="您没有选择任何文件：" + filename)
+        lb2.config(text="您没有选择任何需要发送的文件")
 
 
 def files():
     filenames = tkinter.filedialog.askopenfilenames()
+    datetime_now = datetime.now()
+    date = datetime_now.strftime("%Y-%m-%d")
     if len(filenames) != 0:
         string_filename = ""
         for i in range(0, len(filenames)):
@@ -302,14 +348,18 @@ def files():
             # 传access2019-04-14.log
             try:
                 if "access" in path and ".log" in path:
-                    output_access = path[:-4] + '.txt'
+                    # output_access = path[:-4] + '.txt'
+                    # output_access = 'outLog.txt'
+                    output_access = date + 'outLog.txt'
                     print(path)
                     print(output_access)
                     GetAccessIp(path, output_access)
                     string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
                     print(str(filenames[i]) + " 分析完成！！" + "\n")
                 elif "error" in path and ".log" in path:
-                    output_error = path[:-4] + '.txt'
+                    # output_error = path[:-4] + '.txt'
+                    # output_error = 'outLog.txt'
+                    output_error = date + 'outLog.txt'
                     print(path)
                     print(output_error)
                     GetErrorIP(path, output_error)
@@ -317,12 +367,12 @@ def files():
                     print(str(filenames[i]) + " 分析完成！！" + "\n")
                 else:
                     string_filename += str(filenames[i]) + " 分析失败！！" + "\n"
-                lb.config(text="您选择的文件是：" + string_filename)
+                lb.config(text="您选择的需要分析文件：" + string_filename)
             except:
                 traceback.print_exc()
                 lb.config(text=string_filename+"分析失败，请检查格式是否正确\n或重新单个分析")
     else:
-        lb.config(text="您没有选择任何文件")
+        lb.config(text="您没有选择任何需要分析的文件")
 
 
 if __name__ == '__main__':
@@ -335,6 +385,10 @@ if __name__ == '__main__':
     # time2 = datetime.now()
     # print('总共耗时：' + str(time2 - time1) + 's')
     root = tk.Tk()
-    lb = tk.Label(root, text="您没有选择任何文件")
+    lb = tk.Label(root, text="您没有选择任何需要分析的文件")
+    lb2 = tk.Label(root, text="您没有选择任何需要发送的文件")
+    dzt = tk.IntVar(root, value=0)
+    dyh = tk.IntVar(root, value=0)
+    dj = tk.IntVar(root, value=0)
     TkWindow()
 
