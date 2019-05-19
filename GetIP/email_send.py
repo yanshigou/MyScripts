@@ -14,7 +14,7 @@ def sendMail(body, date, attachment=None, to_mail=None):
     try:
         smtp_server = 'smtp.qq.com'
         from_mail = 'yanshigou@foxmail.com'
-        mail_pass = '此处为邮箱密码'
+        mail_pass = 'tofjtcnjcplcbbbh'
         # to_mail = ['dongzhetong@cmx-iot.com', 'daijian@cmx-iot.com']  # 列表多个
         if to_mail == (None or []):
             print('None or []')
@@ -23,9 +23,9 @@ def sendMail(body, date, attachment=None, to_mail=None):
         msg = MIMEMultipart()
         # Header对中文进行转码
         # msg['From'] = ('dongzhetong@cmx-iot.com<%s>' % from_mail)
-        msg['From'] = ('dongzhetong@cmx-iot.com<%s>' % "dongzhetong@cmx-iot.com")
+        msg['From'] = ('董哲彤<%s>' % "dongzhetong@cmx-iot.com")
         msg['To'] = ','.join(to_mail)
-        msg['Subject'] = Header(date, 'utf-8').encode()
+        msg['Subject'] = Header("【日常log分析】" + date, 'utf-8').encode()
         # plain代表纯文本
         msg.attach(MIMEText(body, 'plain', 'utf-8'))
         # 二进制方式模式文件
