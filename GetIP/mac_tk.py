@@ -91,7 +91,7 @@ def files():
                 if "access" in path and ".log" in path:
                     # output_access = path[:-4] + '.txt'
                     # output_access = 'outLog.txt'
-                    output_access = date + 'outLog.txt'
+                    output_access = '/Users/yanshigou/Desktop/' + date + 'outLog.txt'
                     print(path)
                     print(output_access)
                     GetAccessIp(path, output_access)
@@ -100,7 +100,7 @@ def files():
                 elif "error" in path and ".log" in path:
                     # output_error = path[:-4] + '.txt'
                     # output_error = 'outLog.txt'
-                    output_error = date + 'outLog.txt'
+                    output_error = '/Users/yanshigou/Desktop/' + date + 'outLog.txt'
                     print(path)
                     print(output_error)
                     GetErrorIP(path, output_error)
