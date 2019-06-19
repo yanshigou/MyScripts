@@ -10,6 +10,7 @@ import tkinter as tk
 import tkinter.filedialog
 from tkinter import ttk
 from AnalysisLog import GetAccessIp, GetErrorIP
+import threading
 
 
 def TkWindow():
@@ -23,8 +24,8 @@ def TkWindow():
     rb1.grid(row=0, column=0, padx=11)
     rb2.grid(row=0, column=1, padx=11)
     rb3.grid(row=0, column=2, padx=11)
-    btn = ttk.Button(root, text='选择文件', command=files)
-    btn2 = ttk.Button(root, text='一件发送邮件', command=file)
+    btn = ttk.Button(root, text='选择文件', command=lambda: thread_it(files))
+    btn2 = ttk.Button(root, text='一件发送邮件', command=lambda: thread_it(file))
     lb.pack()
     lb2.pack()
     # lb.grid(row=0, column=0, pady=10)
@@ -75,20 +76,9 @@ def files():
         string_filename = ""
         for i in range(0, len(filenames)):
             path = str(filenames[i])
-            # 传access.log
-            # if path[-10:] == "access.log":
-            #     output_access = path[:-4] + str(datetime.now())[0:10] + '.txt'
-            #     print(path)
-            #     print(output_access)
-            # elif path[-9:] == "error.log":
-            #     output_error = path[:-4] + str(datetime.now())[0:10] + '.txt'
-            #     print('error')
-            #     print(path)
-            #     print(output_error)
-
-            # 传access2019-04-14.log
             try:
                 if "access" in path and ".log" in path:
+                    lb.config(text="正在分析%s请稍等。。。" % path)
                     # output_access = path[:-4] + '.txt'
                     # output_access = 'outLog.txt'
                     output_access = '/Users/yanshigou/Desktop/' + date + 'outLog.txt'
@@ -98,6 +88,7 @@ def files():
                     string_filename += str(filenames[i]) + " 分析完成！！" + "\n"
                     print(str(filenames[i]) + " 分析完成！！" + "\n")
                 elif "error" in path and ".log" in path:
+                    lb.config(text="正在分析%s请稍等。。。" % path)
                     # output_error = path[:-4] + '.txt'
                     # output_error = 'outLog.txt'
                     output_error = '/Users/yanshigou/Desktop/' + date + 'outLog.txt'
@@ -114,6 +105,23 @@ def files():
                 lb.config(text=string_filename+"分析失败，请检查格式是否正确\n或重新单个分析")
     else:
         lb.config(text="您没有选择任何需要分析的文件")
+
+
+def thread_it(func, *args):
+    """
+    将函数打包进线程
+    :param func:
+    :param args:
+    :return:
+    """
+    # 创建
+    t = threading.Thread(target=func, args=args)
+    # 守护 !!!
+    t.setDaemon(True)
+    # 启动
+    t.start()
+    # 阻塞--卡死界面！
+    # t.join()
 
 
 if __name__ == '__main__':
