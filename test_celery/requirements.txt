@@ -4,7 +4,7 @@ billiard==3.3.0.23
 celery==3.1.26.post2
 certifi==2018.11.29
 chardet==3.0.4
-Django==1.11
+Django==1.11.29
 django-celery==3.2.2
 django-cors-headers==2.4.0
 django-filter==2.0.0
