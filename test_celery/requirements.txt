@@ -8,7 +8,7 @@ Django==1.11
 django-celery==3.2.2
 django-cors-headers==2.4.0
 django-filter==2.0.0
-djangorestframework==3.9.0
+djangorestframework==3.11.2
 idna==2.8
 kombu==3.0.37
 Markdown==3.0.1
